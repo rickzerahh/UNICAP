@@ -1,0 +1,350 @@
+Exemplo Metodo insert
+
+[NA CLASSE BINARYTREE]
+public void insert (T value) {
+    if (this.isEmpty() == true) {
+    this.raiz = new TreeNode (value);
+        }
+    else {
+    this.raiz.insertNode (value);
+    }
+}
+
+[NA CLASSE NODE]
+void insertNode (T value){
+    if (value.compareTo(this.getInfo()) == 0) {
+        System.out.println("Valor repetido.");
+    }
+    else if (value.compareTo(this.getInfo()) < 0) {
+        if (this.left == null){
+        this.left = new TreeNode (value);
+    }
+    else {
+        this.left.insertNode (value);
+        }
+    }
+    else {
+        if (this.right == null){
+        this.right = new TreeNode (value);
+    }
+    else {
+        this.right.insertNode (value);
+        }
+    }
+}
+
+Exemplo Metodo find
+
+[NA CLASSE BINARYTREE]
+public T find (T value) {
+    if (this.isEmpty() == true) {
+        return null;
+    }
+    else {
+        return this.raiz.findNode (value);
+    }
+}
+
+[NA CLASSE NODE]
+T findNode (T value) {
+    if (value.compareTo(this.getInfo()) == 0) {
+        return this.getInfo();
+    }
+    else if (value.compareTo(this. getInfo()) < 0) {
+        if (this.getLeft() == null){
+        return null;
+    }
+    else {
+        return this.getLeft().findNode (value);
+        }
+    }
+    else {
+        if (this.getRight() == null){
+        return null;
+    }
+    else {
+        return this.getRight().findNode (value);
+        }
+    }
+}
+
+Exemplo Metodo emOrdem
+
+[NA CLASSE BINARYTREE]
+public void emOrdem () {
+    if (this.isEmpty() == true) {
+        System.out.println("Árvore vazia");
+    } else {
+        percorrerEmOrdem (this.raiz);
+    }
+}
+
+[NA CLASSE NODE]
+private void percorrerEmOrdem (TreeNode<T> r) {
+    if (r != null) {
+        percorrerEmOrdem (r.getLeft());
+        System.out.println(r.getInfo());
+        percorrerEmOrdem (r.getRight());
+    }
+}
+
+Exemplo Metodo preOrdem
+
+[NA CLASSE BINARYTREE]
+public void preOrdem () {
+    if (this.isEmpty() == true) {
+        System.out.println("Árvore vazia");
+    } else {
+        percorrerPreOrdem (this.raiz);
+    }
+}
+
+[NA CLASSE NODE]
+private void percorrerPreOrdem (TreeNode<T> r) {
+    if (r != null) {
+        System.out.println(r.getInfo());
+        percorrerPreOrdem (r.getLeft());
+        percorrerPreOrdem (r.getRight());
+    }
+}
+
+import java.util.*;
+
+public class BinaryTree {
+    private Node root;
+
+    // Classe para representar um nó da árvore
+    private class Node {
+        private int value;
+        private Node left;
+        private Node right;
+
+        public Node(int value) {
+            this.value = value;
+            this.left = null;
+            this.right = null;
+        }
+    }
+
+    // Método para adicionar um valor à árvore
+    public void add(int value) {
+        root = addRecursive(root, value);
+    }
+
+    // Método auxiliar recursivo para adicionar um valor à árvore
+    private Node addRecursive(Node current, int value) {
+        if (current == null) {
+            return new Node(value);
+        }
+
+        if (value < current.value) {
+            current.left = addRecursive(current.left, value);
+        } else if (value > current.value) {
+            current.right = addRecursive(current.right, value);
+        } else {
+            // Trata valores repetidos
+            current.right = addRecursive(current.right, value);
+        }
+
+        return current;
+    }
+
+    // Método para contar quantas vezes um item aparece na árvore
+    public int countOccurrences(int value) {
+        int count = 0;
+
+        Stack<Node> stack = new Stack<>();
+        Node current = root;
+
+        while (current != null || !stack.isEmpty()) {
+            while (current != null) {
+                stack.push(current);
+                current = current.left;
+            }
+
+            current = stack.pop();
+
+            if (current.value == value) {
+                count++;
+            }
+
+            current = current.right;
+        }
+
+        return count;
+    }
+
+    // Método de teste
+    public static void main(String[] args) {
+        BinaryTree tree = new BinaryTree();
+        tree.add(5);
+        tree.add(3);
+        tree.add(7);
+        tree.add(3);
+        tree.add(5);
+
+        int occurrences = tree.countOccurrences(5);
+        System.out.println("O valor 5 aparece " + occurrences + " vezes na árvore.");
+    }
+}
+
+import java.util.*;
+
+public class BinaryTree {
+    private Node root;
+
+    // Classe para representar um nó da árvore
+    private class Node {
+        private int value;
+        private Node left;
+        private Node right;
+
+        public Node(int value) {
+            this.value = value;
+            this.left = null;
+            this.right = null;
+        }
+    }
+
+    // Método para adicionar um valor à árvore
+    public void add(int value) {
+        root = addRecursive(root, value);
+    }
+
+    // Método auxiliar recursivo para adicionar um valor à árvore
+    private Node addRecursive(Node current, int value) {
+        if (current == null) {
+            return new Node(value);
+        }
+
+        if (value < current.value) {
+            current.left = addRecursive(current.left, value);
+        } else if (value > current.value) {
+            current.right = addRecursive(current.right, value);
+        }
+
+        return current;
+    }
+
+    // Passeio em-ordem (in-order traversal) não recursivo
+    public void inOrderTraversal() {
+        if (root == null) {
+            System.out.println("Árvore vazia.");
+            return;
+        }
+
+        Stack<Node> stack = new Stack<>();
+        Node current = root;
+
+        while (current != null || !stack.isEmpty()) {
+            while (current != null) {
+                stack.push(current);
+                current = current.left;
+            }
+
+            current = stack.pop();
+            System.out.print(current.value + " ");
+            current = current.right;
+        }
+
+        System.out.println();
+    }
+
+    // Passeio em pré-ordem (pre-order traversal) não recursivo
+    public void preOrderTraversal() {
+        if (root == null) {
+            System.out.println("Árvore vazia.");
+            return;
+        }
+
+        Stack<Node> stack = new Stack<>();
+        stack.push(root);
+
+        while (!stack.isEmpty()) {
+            Node current = stack.pop();
+            System.out.print(current.value + " ");
+
+            if (current.right != null) {
+                stack.push(current.right);
+            }
+
+            if (current.left != null) {
+                stack.push(current.left);
+            }
+        }
+
+        System.out.println();
+    }
+
+    // Método de teste
+    public static void main(String[] args) {
+        BinaryTree tree = new BinaryTree();
+        tree.add(5);
+        tree.add(3);
+        tree.add(7);
+        tree.add(2);
+        tree.add(4);
+        tree.add(6);
+        tree.add(8);
+
+        System.out.println("Passeio em-ordem:");
+        tree.inOrderTraversal();
+
+        System.out.println("Passeio em pré-ordem:");
+        tree.preOrderTraversal();
+    }
+}
+
+import java.util.Stack;
+
+class TreeNode<T> {
+    T data;
+    TreeNode<T> left;
+    TreeNode<T> right;
+
+    public TreeNode(T data) {
+        this.data = data;
+    }
+}
+
+public class BinarySearchTreeMinValue {
+    public static <T extends Comparable<T>> T findMinValue(TreeNode<T> root) {
+        if (root == null)
+            throw new IllegalArgumentException("A árvore está vazia.");
+
+        TreeNode<T> current = root;
+        Stack<TreeNode<T>> stack = new Stack<>();
+        T minValue = null;
+
+        while (current != null || !stack.isEmpty()) {
+            while (current != null) {
+                stack.push(current);
+                current = current.left;
+            }
+
+            current = stack.pop();
+
+            if (minValue == null || current.data.compareTo(minValue) < 0) {
+                minValue = current.data;
+            }
+
+            current = current.right;
+        }
+
+        return minValue;
+    }
+
+    public static void main(String[] args) {
+        // Exemplo de árvore binária de busca genérica
+        TreeNode<Integer> root = new TreeNode<>(10);
+        root.left = new TreeNode<>(5);
+        root.right = new TreeNode<>(15);
+        root.left.left = new TreeNode<>(3);
+        root.left.right = new TreeNode<>(8);
+        root.right.left = new TreeNode<>(12);
+        root.right.right = new TreeNode<>(20);
+
+        int minValue = findMinValue(root);
+        System.out.println("Menor valor encontrado: " + minValue);
+    }
+}
