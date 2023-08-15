@@ -1,0 +1,273 @@
+Cliente 
+
+public class Cliente {
+    private String nome;
+    private int idade;
+    private String cpf;
+    private String endereco;
+    private boolean bomCliente;
+    private Item[] carrinhoDeCompras;
+
+    public Cliente(String nome, int idade, String cpf, String endereco, boolean bomCliente, Item[] carrinhoDeCompras) {
+        this.nome = nome;
+        this.idade = idade;
+        this.cpf = cpf;
+        this.endereco = endereco;
+        this.bomCliente = bomCliente;
+        this.carrinhoDeCompras = new Item[100];
+    }
+
+    public void adicionar(Item item) {
+        for (int i = 0; i < carrinhoDeCompras.length; i++) {
+            if (carrinhoDeCompras[i] == null) {
+                carrinhoDeCompras[i] = item;
+                return;
+            }
+        }
+    }
+
+    public void cancelar(int codigo) {
+        for (int i = 0; i < carrinhoDeCompras.length; i++) {
+            if (carrinhoDeCompras[i] != null && carrinhoDeCompras[i].getCodigo() == codigo) {
+                carrinhoDeCompras[i] = null;
+                return;
+            }
+        }
+    }
+
+    public double comprar() {
+        double totalGasto = 0;
+        int totalItens = 0;
+        for (Item item : carrinhoDeCompras) {
+            if (item != null) {
+                totalGasto += item.getValor();
+                totalItens++;
+                item.setQtdEstoque(item.getQtdEstoque() - 1);
+            }
+        }
+        double mediaGasto = totalItens == 0 ? 0 : totalGasto / totalItens;
+        carrinhoDeCompras = new Item[100];
+        System.out.println("Métida de Gasto: " + mediaGasto);
+        return totalGasto + (bomCliente ? totalGasto * 0.05 : 0);
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public int getIdade() {
+        return idade;
+    }
+
+    public void setIdade(int idade) {
+        this.idade = idade;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
+    }
+
+    public boolean isBomCliente() {
+        return bomCliente;
+    }
+
+    public void setBomCliente(boolean bomCliente) {
+        this.bomCliente = bomCliente;
+    }
+
+    public Item[] getCarrinhoDeCompras() {
+        return carrinhoDeCompras;
+    }
+
+    public void setCarrinhoDeCompras(Item[] carrinhoDeCompras) {
+        this.carrinhoDeCompras = carrinhoDeCompras;
+    }
+}
+
+Item
+
+public class Item {
+    private String nome;
+    private int codigo;
+    private double valor;
+    private int qtdEstoque;
+    private boolean disponibilidade;
+
+    public Item(String nome, int codigo, double valor, int qtdEstoque, boolean disponibilidade) {
+        this.nome = nome;
+        this.codigo = codigo;
+        this.valor = valor;
+        this.qtdEstoque = qtdEstoque;
+        this.disponibilidade = disponibilidade;
+    }
+
+    // Getters e setters
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public int getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
+    }
+
+    public double getValor() {
+        return valor;
+    }
+
+    public void setValor(double valor) {
+        this.valor = valor;
+    }
+
+    public int getQtdEstoque() {
+        return qtdEstoque;
+    }
+
+    public void setQtdEstoque(int qtdEstoque) {
+        this.qtdEstoque = qtdEstoque;
+    }
+
+    public boolean isDisponibilidade() {
+        return disponibilidade;
+    }
+
+    public void setDisponibilidade(boolean disponibilidade) {
+        this.disponibilidade = disponibilidade;
+    }
+}
+
+ClienteEspecial
+
+public class ClienteEspecial extends Cliente {
+    private int pontos;
+    private double saldoCompras;
+
+    public ClienteEspecial(String nome, int idade, String cpf, String endereco, boolean bomCliente, Item[] carrinhoDeCompras) {
+        super(nome, idade, cpf, endereco, bomCliente, carrinhoDeCompras);
+        pontos = 0;
+        saldoCompras = 0;
+    }
+
+    public int getPontos() {
+        return pontos;
+    }
+
+    public double getSaldoCompras() {
+        return saldoCompras;
+    }
+
+    public void comprar(Item item, int pontos) {
+        if (pontos > this.pontos) {
+            System.out.println("Pontos insuficientes.");
+            return;
+        }
+        this.pontos -= pontos;
+        System.out.println("Item " + item.getNome() + " comprado com sucesso usando " + pontos + " pontos.");
+    }
+
+    @Override
+    public double comprar() {
+        double totalGasto = 0;
+        int totalItens = 0;
+        for (Item item : carrinhoDeCompras) {
+            if (item != null) {
+                totalGasto += item.getValor();
+                totalItens++;
+                item.setQtdEstoque(item.getQtdEstoque() - 1);
+                saldoCompras += item.getValor();
+                if (saldoCompras >= 100) {
+                    int novosPontos = (int)(saldoCompras / 100) * 5;
+                    pontos += novosPontos;
+                    saldoCompras -= novosPontos * 20;
+                }
+            }
+        }
+        double mediaGasto = totalItens == 0 ? 0 : totalGasto / totalItens;
+        carrinhoDeCompras = new Item[100];
+        System.out.println("Média de gasto: " + mediaGasto);
+        return totalGasto + (bomCliente ? totalGasto * 0.05 : 0);
+    }
+}
+
+Funcionario
+
+public class Funcionario extends ClienteEspecial {
+    
+    private String setor;
+    private int id;
+    private double salario;
+    
+    public Funcionario(String nome, int idade, String cpf, String endereco, boolean bomCliente, Item[] carrinhoDeCompras, String setor, int id, double salario, int pontos, double saldoCompras) {
+        super(nome, idade, cpf, endereco, bomCliente, carrinhoDeCompras);
+        this.setor = setor;
+        this.id = id;
+        this.salario = salario;
+    }
+    
+    public void renovarEstoque(int codigo, int quantidade) {
+        for (Item item : getCarrinhoDeCompras()) {
+            if (item.getCodigo() == codigo) {
+                item.setQtdEstoque(quantidade);
+            }
+        }
+    }
+    
+    public void bloquearItem(int codigo, boolean disponibilidade) {
+        for (Item item : getCarrinhoDeCompras()) {
+            if (item.getCodigo() == codigo) {
+                item.setDisponibilidade(disponibilidade);
+            }
+        }
+    }
+    
+    public double calcularSalario() {
+        return salario;
+    }
+    
+    public String getSetor() {
+        return setor;
+    }
+    
+    public void setSetor(String setor) {
+        this.setor = setor;
+    }
+    
+    public int getId() {
+        return id;
+    }
+    
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    public double getSalario() {
+        return salario;
+    }
+    
+    public void setSalario(double salario) {
+        this.salario = salario;
+    }
+}
